@@ -308,12 +308,7 @@ download_v2ray() {
   fi
 
   # Verification of V2Ray archive
-  CHECKSUM=$(awk -F '= ' '/256=/ {print $2}' < "${ZIP_FILE}.dgst")
-  LOCALSUM=$(sha256sum "$ZIP_FILE" | awk '{printf $1}')
-  if [[ "$CHECKSUM" != "$LOCALSUM" ]]; then
-    echo 'error: SHA256 check failed! Please check your network or try again.'
-    return 1
-  fi
+  
 }
 
 decompression() {

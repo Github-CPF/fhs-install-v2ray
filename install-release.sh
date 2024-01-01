@@ -28,7 +28,7 @@ JSON_PATH=${JSON_PATH:-/usr/local/etc/v2ray}
 # export check_all_service_files='yes'
 
 curl() {
-  $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 20 "$@"
+  $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
 }
 
 systemd_cat_config() {
@@ -185,7 +185,7 @@ judgment_parameters() {
         ;;
       '-l' | '--local')
         LOCAL_INSTALL='1'
-        LOCAL_FILE="usr/local/etc/v2ray-linux-64.zip"
+        LOCAL_FILE="${2:?error: Please specify the correct local file.}"
         break
         ;;
       '-p' | '--proxy')
@@ -291,8 +291,29 @@ get_version() {
 }
 
 download_v2ray() {
-  
-  
+  DOWNLOAD_LINK="https://raw.githubusercontent.com/Github-CPF/fhs-install-v2ray/master/v2ray-linux-64.zip"
+  echo "Downloading V2Ray archive: $DOWNLOAD_LINK"
+  if ! curl -x "${PROXY}" -R -H 'Cache-Control: no-cache' -o "$ZIP_FILE" "$DOWNLOAD_LINK"; then
+    echo 'error: Download failed! Please check your network or try again.'
+    return 1
+  fi
+  echo "Downloading verification file for V2Ray archive: $DOWNLOAD_LINK.dgst"
+  if ! curl -x "${PROXY}" -sSR -H 'Cache-Control: no-cache' -o "$ZIP_FILE.dgst" "$DOWNLOAD_LINK.dgst"; then
+    echo 'error: Download failed! Please check your network or try again.'
+    return 1
+  fi
+  if [[ "$(cat "$ZIP_FILE".dgst)" == 'Not Found' ]]; then
+    echo 'error: This version does not support verification. Please replace with another version.'
+    return 1
+  fi
+
+  # Verification of V2Ray archive
+  CHECKSUM=$(awk -F '= ' '/256=/ {print $2}' < "${ZIP_FILE}.dgst")
+  LOCALSUM=$(sha256sum "$ZIP_FILE" | awk '{printf $1}')
+  if [[ "$CHECKSUM" != "$LOCALSUM" ]]; then
+    echo 'error: SHA256 check failed! Please check your network or try again.'
+    return 1
+  fi
 }
 
 decompression() {
@@ -541,8 +562,12 @@ main() {
     NUMBER="$?"
     if [[ "$NUMBER" -eq '0' ]] || [[ "$FORCE" -eq '1' ]] || [[ "$NUMBER" -eq 2 ]]; then
       echo "info: Installing V2Ray $RELEASE_VERSION for $(uname -m)"
-      #download_v2ray
-     
+      download_v2ray
+      if [[ "$?" -eq '1' ]]; then
+        "rm" -r "$TMP_DIRECTORY"
+        echo "removed: $TMP_DIRECTORY"
+        exit 1
+      fi
       install_software 'unzip' 'unzip'
       decompression "$ZIP_FILE"
     elif [[ "$NUMBER" -eq '1' ]]; then

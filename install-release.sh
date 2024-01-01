@@ -293,6 +293,27 @@ get_version() {
 download_v2ray() {
   DOWNLOAD_LINK="https://raw.githubusercontent.com/Github-CPF/fhs-install-v2ray/master/v2ray-linux-64.zip"
   echo "Downloading V2Ray archive: $DOWNLOAD_LINK"  
+  if ! curl -x "${PROXY}" -R -H 'Cache-Control: no-cache' -o "$ZIP_FILE" "$DOWNLOAD_LINK"; then
+    echo 'error: Download failed! Please check your network or try again.'
+    
+  fi
+  echo "Downloading verification file for V2Ray archive: $DOWNLOAD_LINK.dgst"
+  if ! curl -x "${PROXY}" -sSR -H 'Cache-Control: no-cache' -o "$ZIP_FILE.dgst" "$DOWNLOAD_LINK.dgst"; then
+    echo 'error: Download failed! Please check your network or try again.'
+    
+  fi
+  if [[ "$(cat "$ZIP_FILE".dgst)" == 'Not Found' ]]; then
+    echo 'error: This version does not support verification. Please replace with another version.'
+    
+  fi
+
+  # Verification of V2Ray archive
+  CHECKSUM=$(awk -F '= ' '/256=/ {print $2}' < "${ZIP_FILE}.dgst")
+  LOCALSUM=$(sha256sum "$ZIP_FILE" | awk '{printf $1}')
+  if [[ "$CHECKSUM" != "$LOCALSUM" ]]; then
+    echo 'error: SHA256 check failed! Please check your network or try again.'
+    
+  fi
 }
 
 decompression() {
@@ -525,7 +546,7 @@ main() {
 
   # Two very important variables
   TMP_DIRECTORY="$(mktemp -d)"
-  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-64.zip"
+  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-$MACHINE.zip"
 
   # Install V2Ray from a local file, but still need to make sure the network is available
   if [[ "$LOCAL_INSTALL" -eq '1' ]]; then
@@ -533,7 +554,7 @@ main() {
     echo -n 'warn: Please make sure the file is valid because we cannot confirm it. (Press any key) ...'
     read -r
     install_software 'unzip' 'unzip'
-    decompression "v2ray-linux-64.zip"#"$LOCAL_FILE"
+    decompression "$LOCAL_FILE"
   else
     # Normal way
     install_software 'curl' 'curl'

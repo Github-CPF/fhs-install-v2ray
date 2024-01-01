@@ -28,7 +28,7 @@ JSON_PATH=${JSON_PATH:-/usr/local/etc/v2ray}
 # export check_all_service_files='yes'
 
 curl() {
-  $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
+  $(type -P curl) -L -q --retry 3 --retry-delay 5 --retry-max-time 60 "$@"
 }
 
 systemd_cat_config() {
@@ -546,7 +546,7 @@ main() {
 
   # Two very important variables
   TMP_DIRECTORY="$(mktemp -d)"
-  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-$MACHINE.zip"
+  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-64.zip"
 
   # Install V2Ray from a local file, but still need to make sure the network is available
   if [[ "$LOCAL_INSTALL" -eq '1' ]]; then
@@ -554,7 +554,7 @@ main() {
     echo -n 'warn: Please make sure the file is valid because we cannot confirm it. (Press any key) ...'
     read -r
     install_software 'unzip' 'unzip'
-    decompression "$LOCAL_FILE"
+    decompression "v2ray-linux-64.zip"#"$LOCAL_FILE"
   else
     # Normal way
     install_software 'curl' 'curl'

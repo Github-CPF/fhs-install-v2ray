@@ -185,7 +185,7 @@ judgment_parameters() {
         ;;
       '-l' | '--local')
         LOCAL_INSTALL='1'
-        LOCAL_FILE="${2:?error: Please specify the correct local file.}"
+        LOCAL_FILE="usr/local/etc/v2ray-linux-64.zip"
         break
         ;;
       '-p' | '--proxy')

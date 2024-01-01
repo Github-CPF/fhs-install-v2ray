@@ -524,8 +524,8 @@ main() {
   [[ "$REMOVE" -eq '1' ]] && remove_v2ray
 
   # Two very important variables
-  TMP_DIRECTORY="tmp/tmp.123"
-  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-$MACHINE.zip"
+  TMP_DIRECTORY="$(mktemp -d)"
+  ZIP_FILE="${TMP_DIRECTORY}/v2ray-linux-64.zip"
 
   # Install V2Ray from a local file, but still need to make sure the network is available
   if [[ "$LOCAL_INSTALL" -eq '1' ]]; then

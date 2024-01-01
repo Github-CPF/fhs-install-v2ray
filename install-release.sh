@@ -28,7 +28,7 @@ JSON_PATH=${JSON_PATH:-/usr/local/etc/v2ray}
 # export check_all_service_files='yes'
 
 curl() {
-  $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
+  $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 20 "$@"
 }
 
 systemd_cat_config() {
@@ -541,7 +541,7 @@ main() {
     NUMBER="$?"
     if [[ "$NUMBER" -eq '0' ]] || [[ "$FORCE" -eq '1' ]] || [[ "$NUMBER" -eq 2 ]]; then
       echo "info: Installing V2Ray $RELEASE_VERSION for $(uname -m)"
-      download_v2ray
+      #download_v2ray
      
       install_software 'unzip' 'unzip'
       decompression "$ZIP_FILE"

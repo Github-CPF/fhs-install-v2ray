@@ -291,7 +291,7 @@ get_version() {
 }
 
 download_v2ray() {
-  DOWNLOAD_LINK="/usr/local/etc/v2ray-linux-64.zip"
+  
   
 }
 

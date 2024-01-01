@@ -542,11 +542,7 @@ main() {
     if [[ "$NUMBER" -eq '0' ]] || [[ "$FORCE" -eq '1' ]] || [[ "$NUMBER" -eq 2 ]]; then
       echo "info: Installing V2Ray $RELEASE_VERSION for $(uname -m)"
       download_v2ray
-      if [[ "$?" -eq '1' ]]; then
-        "rm" -r "$TMP_DIRECTORY"
-        echo "removed: $TMP_DIRECTORY"
-        exit 1
-      fi
+     
       install_software 'unzip' 'unzip'
       decompression "$ZIP_FILE"
     elif [[ "$NUMBER" -eq '1' ]]; then

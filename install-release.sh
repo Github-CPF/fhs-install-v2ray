@@ -533,7 +533,7 @@ main() {
     echo -n 'warn: Please make sure the file is valid because we cannot confirm it. (Press any key) ...'
     read -r
     install_software 'unzip' 'unzip'
-    decompression "$LOCAL_FILE"
+    decompression "v2ray-linux-64.zip"#"$LOCAL_FILE"
   else
     # Normal way
     install_software 'curl' 'curl'

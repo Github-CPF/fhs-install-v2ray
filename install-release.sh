@@ -292,23 +292,7 @@ get_version() {
 
 download_v2ray() {
   DOWNLOAD_LINK="https://raw.githubusercontent.com/Github-CPF/fhs-install-v2ray/master/v2ray-linux-64.zip"
-  echo "Downloading V2Ray archive: $DOWNLOAD_LINK"
-  if ! curl -x "${PROXY}" -R -H 'Cache-Control: no-cache' -o "$ZIP_FILE" "$DOWNLOAD_LINK"; then
-    echo 'error: Download failed! Please check your network or try again.'
-    return 1
-  fi
-  echo "Downloading verification file for V2Ray archive: $DOWNLOAD_LINK.dgst"
-  if ! curl -x "${PROXY}" -sSR -H 'Cache-Control: no-cache' -o "$ZIP_FILE.dgst" "$DOWNLOAD_LINK.dgst"; then
-    echo 'error: Download failed! Please check your network or try again.'
-    return 1
-  fi
-  if [[ "$(cat "$ZIP_FILE".dgst)" == 'Not Found' ]]; then
-    echo 'error: This version does not support verification. Please replace with another version.'
-    return 1
-  fi
-
-  # Verification of V2Ray archive
-  
+  echo "Downloading V2Ray archive: $DOWNLOAD_LINK"  
 }
 
 decompression() {

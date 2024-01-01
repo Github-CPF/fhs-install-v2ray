@@ -292,28 +292,7 @@ get_version() {
 
 download_v2ray() {
   DOWNLOAD_LINK="/usr/local/etc/v2ray-linux-64.zip"
-  echo "Downloading V2Ray archive: $DOWNLOAD_LINK"
-  if ! curl -x "${PROXY}" -R -H 'Cache-Control: no-cache' -o "$ZIP_FILE" "$DOWNLOAD_LINK"; then
-    echo 'error: Download failed! Please check your network or try again.'
-    return 1
-  fi
-  echo "Downloading verification file for V2Ray archive: $DOWNLOAD_LINK.dgst"
-  if ! curl -x "${PROXY}" -sSR -H 'Cache-Control: no-cache' -o "$ZIP_FILE.dgst" "$DOWNLOAD_LINK.dgst"; then
-    echo 'error: Download failed! Please check your network or try again.'
-    return 1
-  fi
-  if [[ "$(cat "$ZIP_FILE".dgst)" == 'Not Found' ]]; then
-    echo 'error: This version does not support verification. Please replace with another version.'
-    return 1
-  fi
-
-  # Verification of V2Ray archive
-  CHECKSUM=$(awk -F '= ' '/256=/ {print $2}' < "${ZIP_FILE}.dgst")
-  LOCALSUM=$(sha256sum "$ZIP_FILE" | awk '{printf $1}')
-  if [[ "$CHECKSUM" != "$LOCALSUM" ]]; then
-    echo 'error: SHA256 check failed! Please check your network or try again.'
-    return 1
-  fi
+  
 }
 
 decompression() {
